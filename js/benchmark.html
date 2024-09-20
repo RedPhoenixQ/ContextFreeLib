@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Test</title>
+		<script src="https://cdn.jsdelivr.net/gh/LenaSYS/Random-Number-Generator/seededrandom.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/LenaSYS/ContextFreeLib@e5d9000b7c7be633fd7408a7627a98651c99bc6b/js/contextfreegrammar.js"></script>
+		<script>
+			const resOld = [];
+			const startOld = performance.now();
+			for (let i = 0; i < 1000; i++) {
+				Math.setSeed(i);
+				resOld.push(generate_sentence(1, 1, 0, NaN, true, true, true, true, true, true, true, true));
+			}
+			const timeOld = performance.now() - startOld;
+			console.info("old", timeOld);
+		</script>
+		<script src="./contextfreegrammar.js"></script>
+		<script>
+			const resNew = [];
+			const start2 = performance.now();
+			for (let i = 0; i < 1000; i++) {
+				Math.setSeed(i);
+				resNew.push(generate_sentence(0.5, 0.5, 0.5, NaN, true, true, true, true, true, true, true, true));
+			}
+			const timeNew = performance.now() - start2;
+			console.info("new", timeNew);
+		</script>
+	</head>
+	<body>
+		<h1>Testing</h1>
+		<output id="timeOldOut" style="display: block"></output>
+		<output id="timeNewOut" style="display: block"></output>
+		<script>
+			document.getElementById("timeOldOut").innerText = `OLD: ${timeOld} ms`;
+			document.getElementById("timeNewOut").innerText = `NEW: ${timeNew} ms`;
+		</script>
+		<textarea name="" id="out" cols="80" rows="30"></textarea>
+		<script>
+			for (let i = 0; i < resNew.length; i++) {
+				console.debug(i, resOld[i], resNew[i]);
+				if (resOld[i] !== resNew[i]) {
+					document.getElementById("out").value += `\n${i}:\nOLD: ${resOld[i]}\nNEW: ${resNew[i]}\n`;
+				}
+			}
+		</script>
+		<textarea name="" id="out2" cols="80" rows="30"></textarea>
+		<script>
+			for (let i = 0; i < resNew.length; i++) {
+				console.debug(i, resNew[i]);
+				document.getElementById("out2").value += `\n${i}:${/\s\s+/g.test(resNew[i]) ? " CONTAINS DOUBLE SPACES" : ""}\n${resNew[i]}\n`;
+			}
+		</script>
+	</body>
+</html>
